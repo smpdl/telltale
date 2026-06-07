@@ -1,0 +1,26 @@
+[project]
+name = "telltale"
+version = "0.1.0"
+description = "A fun poker game"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "gradio", 
+    "numpy",
+    "pydantic",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["telltale*"]
+
+[tool.setuptools]
+py-modules = ["app"]
