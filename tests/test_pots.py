@@ -3,7 +3,10 @@ from telltale.game.holdem import HandState, PlayerState, Street
 
 
 def cards(*values: str) -> list[Card]:
-    return [Card.parse(value) for value in values]
+    parsed: list[Card] = []
+    for value in values:
+        parsed.append(Card.parse(value))
+    return parsed
 
 
 def showdown_hand(players: list[PlayerState], board: list[Card], contributions: dict[str, int]) -> HandState:

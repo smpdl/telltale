@@ -5,10 +5,10 @@ from telltale.game.holdem import ActionType, PlayerState, PokerError, Street
 
 
 def make_players(stacks: tuple[int, ...] = (100, 100, 100)) -> list[PlayerState]:
-    return [
-        PlayerState(f"p{index}", f"Player {index}", index, stack, is_human=index == 0)
-        for index, stack in enumerate(stacks)
-    ]
+    players: list[PlayerState] = []
+    for index, stack in enumerate(stacks):
+        players.append(PlayerState(f"p{index}", f"Player {index}", index, stack, is_human=index == 0))
+    return players
 
 
 def start_hand(stacks: tuple[int, ...] = (100, 100, 100)):
@@ -18,7 +18,10 @@ def start_hand(stacks: tuple[int, ...] = (100, 100, 100)):
 def test_starting_three_player_hand_deals_two_cards_each():
     hand = start_hand()
 
-    assert [len(player.hole_cards) for player in hand.players] == [2, 2, 2]
+    hole_card_counts = []
+    for player in hand.players:
+        hole_card_counts.append(len(player.hole_cards))
+    assert hole_card_counts == [2, 2, 2]
 
 
 def test_preflop_blinds_are_posted_correctly():
@@ -109,7 +112,10 @@ def test_public_state_hides_opponent_hole_cards_before_showdown():
 
     public = hand.to_public_state("p0")
 
-    assert public["players"][0]["hole_cards"] == [str(card) for card in hand.players[0].hole_cards]
+    expected_hole_cards = []
+    for card in hand.players[0].hole_cards:
+        expected_hole_cards.append(str(card))
+    assert public["players"][0]["hole_cards"] == expected_hole_cards
     assert public["players"][1]["hole_cards"] == []
     assert public["players"][2]["hole_cards"] == []
     assert "deck" not in public
@@ -117,7 +123,10 @@ def test_public_state_hides_opponent_hole_cards_before_showdown():
 
 def test_seeded_first_legal_action_simulation_conserves_chips_and_cards():
     hand = start_hand()
-    total_chips = sum(player.stack for player in hand.players) + sum(hand.pot_contributions.values())
+    total_chips = 0
+    for player in hand.players:
+        total_chips += player.stack
+    total_chips += sum(hand.pot_contributions.values())
     priority = [
         ActionType.CHECK,
         ActionType.CALL,
@@ -129,15 +138,24 @@ def test_seeded_first_legal_action_simulation_conserves_chips_and_cards():
 
     while hand.street != Street.COMPLETE:
         legal = hand.legal_actions()
-        action = next(candidate for candidate in priority if candidate in legal)
+        action = None
+        for candidate in priority:
+            if candidate in legal:
+                action = candidate
+                break
         hand.apply_action(action, amount=10 if action in {ActionType.BET, ActionType.RAISE} else 0)
 
-    visible_and_deck_cards = [
-        *(card for player in hand.players for card in player.hole_cards),
-        *hand.board_cards,
-        *hand.deck.cards,
-    ]
+    visible_and_deck_cards = []
+    for player in hand.players:
+        for card in player.hole_cards:
+            visible_and_deck_cards.append(card)
+    visible_and_deck_cards.extend(hand.board_cards)
+    visible_and_deck_cards.extend(hand.deck.cards)
 
-    assert all(player.stack >= 0 for player in hand.players)
+    for player in hand.players:
+        assert player.stack >= 0
     assert len(visible_and_deck_cards) == len(set(visible_and_deck_cards))
-    assert sum(player.stack for player in hand.players) == total_chips
+    final_chips = 0
+    for player in hand.players:
+        final_chips += player.stack
+    assert final_chips == total_chips
