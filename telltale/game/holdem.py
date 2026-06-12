@@ -491,18 +491,20 @@ def evaluate_7(cards: list[Card]) -> tuple[int, ...]:
     return best_rank
 
 def evaluate_5(cards: list[Card]) -> tuple[int, ...]:
-    """Returns the best five-card Hold'em rank from five cards."""
-    values: list[int] = []
+    """
+    Returns the best five-card Hold'em rank from five cards.    
+    """
+    values: list[int] = [] # for all cards, convert the rank to value
     for card in cards:
         values.append(_rank_value(card.rank))
-    values.sort(reverse=True)
+    values.sort(reverse=True) # sort the values in descending order
 
-    suits: set[str] = set()
+    suits: set[str] = set() # get the suits of the cards
     for card in cards:
         suits.add(card.suit)
-    is_flush = len(suits) == 1
+    is_flush = len(suits) == 1 # check if the cards are a flush. 
 
-    unique_values = sorted(set(values), reverse=True)
+    unique_values = sorted(set(values), reverse=True) # get the unique values of the cards
     is_straight = False
     straight_high = 0
     if len(unique_values) == 5:
@@ -586,7 +588,10 @@ def _ranks_with_count_other_than(counts: Counter, excluded_count: int) -> list[i
 def build_side_pots(contributions: dict[str, int], players: list[PlayerState]) -> list[Pot]:
     """
     Builds the side pots for the hands.
+
     Side pots are built when a player goes all-in and there are other players who have not folded.
+    For example, if Alice puts in 50 chips all-in, Bob puts in 200, and Carol puts in 200, Alice 
+    can only win 150 (50x3); Bob and Carol contest the remaining 300 between themselves.
     """
     levels: set[int] = set()
     for amount in contributions.values():

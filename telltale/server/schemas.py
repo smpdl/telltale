@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
+from telltale.game.economy import RunStatus
 from telltale.game.holdem import ActionType, Street
 
 
@@ -32,3 +33,40 @@ class HandPublicState(BaseModel):
     current_actor_index: int | None
     legal_actions: list[ActionType]
     action_history: list[dict]
+
+
+class PerkPublicState(BaseModel):
+    perk_id: str
+    name: str
+    description: str
+    trigger_timing: str
+    remaining_uses: int | None = None
+    remaining_floors: int | None = None
+    metadata: dict = Field(default_factory=dict)
+
+
+class TablePublicState(BaseModel):
+    floor_number: int
+    seed: str
+    player_stack: int
+    opponent_stacks: list[int]
+    small_blind: int
+    big_blind: int
+    hand_index: int
+    pending_metadata: dict = Field(default_factory=dict)
+
+
+class RunPublicState(BaseModel):
+    run_id: str
+    seed: str
+    floor_index: int
+    floor_number: int | None
+    bankroll: int
+    continues: int
+    active_perks: list[PerkPublicState]
+    completed_floors: list[int]
+    status: RunStatus
+    current_table: TablePublicState | None
+    available_rewards: list[str]
+    awaiting_reward: bool
+    event_log: list[dict]
