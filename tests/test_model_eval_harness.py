@@ -31,6 +31,10 @@ class StaticRuntime:
         return self.output
 
 
+class DiagnosticRuntime(StaticRuntime):
+    last_generation_metadata = {"finish_reason": "stop", "raw_text_length": 0}
+
+
 def test_smoke_eval_cases_build_real_agent_prompts():
     prompts = [case.build_prompt() for case in SMOKE_EVAL_CASES]
 
@@ -137,6 +141,15 @@ def test_invalid_json_model_output_is_a_visible_eval_error():
     assert result.json_valid is False
     assert result.final_decision is None
     assert result.error is not None
+
+
+def test_eval_result_includes_runtime_generation_diagnostics():
+    runtime = DiagnosticRuntime("")
+
+    result = evaluate_case(NEMOTRON_3_NANO_4B_Q4_K_M, runtime, SMOKE_EVAL_CASES[0], EvalRunConfig())
+
+    assert result.json_valid is False
+    assert result.runtime_metadata["generation"] == {"finish_reason": "stop", "raw_text_length": 0}
 
 
 def test_call_amount_canonicalization_is_not_scored_as_repair():

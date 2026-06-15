@@ -1,0 +1,110 @@
+.map-scene {
+  min-height: 100vh;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 1.3rem;
+  padding: clamp(1rem, 3vw, 2.6rem);
+  background: var(--bg);
+}
+
+.map-header {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.map-header h2 {
+  margin: 0;
+  font-size: clamp(2.2rem, 7vw, 5rem);
+  line-height: 0.95;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.floor-map {
+  position: relative;
+  z-index: 2;
+  width: min(42rem, 100%);
+  margin: auto;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.map-status {
+  margin: 0;
+  padding: 1rem;
+  border: 2px dashed var(--line);
+  color: var(--muted);
+  text-align: center;
+}
+
+.map-node {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  padding: 0.85rem;
+  background: var(--panel);
+}
+
+.map-node.MuiCard-root {
+  color: var(--ink);
+  background: var(--panel);
+  box-shadow: none;
+}
+
+.map-node-copy {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.map-node span {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  color: var(--muted);
+  background: #090807;
+  font-weight: 700;
+}
+
+.map-node span {
+  border-color: var(--gold);
+  color: #120e0a;
+  background: var(--gold);
+}
+
+.map-node strong {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+}
+
+.map-node small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.map-node-boss {
+  border-color: var(--red);
+}
+
+.map-node-boss span {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--ink);
+}
+
+.map-start {
+  position: relative;
+  z-index: 2;
+  justify-self: center;
+  margin-bottom: 1rem;
+}

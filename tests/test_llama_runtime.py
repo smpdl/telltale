@@ -45,7 +45,10 @@ def test_eval_runtime_can_resolve_huggingface_candidate(monkeypatch, tmp_path):
         def __call__(self, prompt, **kwargs):
             calls["prompt"] = prompt
             calls["generate_kwargs"] = kwargs
-            return {"choices": [{"text": '{"action":"check"}'}]}
+            return {
+                "choices": [{"text": ' {"action":"check"}\n', "finish_reason": "stop"}],
+                "usage": {"completion_tokens": 5},
+            }
 
     monkeypatch.setitem(
         sys.modules,
@@ -65,9 +68,13 @@ def test_eval_runtime_can_resolve_huggingface_candidate(monkeypatch, tmp_path):
 
     output = runtime.generate("prompt", max_tokens=32, temperature=0.4, seed=17)
 
-    assert output == '{"action":"check"}'
+    assert output == ' {"action":"check"}\n'
     assert calls["repo_id"] == "nvidia/NVIDIA-Nemotron-3-Nano-4B-GGUF"
     assert calls["filename"] == "NVIDIA-Nemotron3-Nano-4B-Q4_K_M.gguf"
     assert calls["llama_kwargs"]["model_path"] == str(model_path)
     assert calls["llama_kwargs"]["n_gpu_layers"] == -1
     assert calls["generate_kwargs"]["max_tokens"] == 32
+    assert "stop" not in calls["generate_kwargs"]
+    assert runtime.last_generation_metadata["finish_reason"] == "stop"
+    assert runtime.last_generation_metadata["raw_text_length"] == len(output)
+    assert runtime.last_generation_metadata["usage"] == {"completion_tokens": 5}

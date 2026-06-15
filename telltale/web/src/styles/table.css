@@ -1,0 +1,402 @@
+.table-scene {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.85rem;
+  padding: clamp(0.85rem, 2vw, 1.4rem);
+}
+
+.top-hud {
+  display: grid;
+  grid-template-columns: minmax(13rem, 1fr) auto auto;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.top-hud h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+  line-height: 1;
+}
+
+.hud-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.metric,
+.hud-actions,
+.notice-banner {
+  border: 2px solid var(--line);
+  border-radius: 0;
+  background: var(--panel);
+}
+
+.metric.MuiCard-root,
+.seat-panel.MuiCard-root,
+.action-dock.MuiCard-root,
+.event-reel .MuiCard-root {
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.metric.MuiCard-root,
+.action-dock.MuiCard-root,
+.event-reel .MuiCard-root {
+  background: var(--panel);
+}
+
+.metric {
+  min-width: 7.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.45rem;
+  align-items: center;
+  padding: 0.62rem 0.75rem;
+}
+
+.metric svg {
+  color: var(--gold);
+  grid-row: span 2;
+}
+
+.metric span {
+  color: var(--dim);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.metric strong {
+  font-size: 1.02rem;
+}
+
+.hud-actions {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.35rem;
+}
+
+.hud-actions button,
+.trace-drawer button {
+  width: 2.55rem;
+  height: 2.55rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0;
+  background: #14110f;
+  color: var(--ink);
+}
+
+.hud-actions .text-button {
+  width: auto;
+  padding: 0 0.75rem;
+  white-space: nowrap;
+}
+
+.notice-banner {
+  padding: 0.7rem 0.9rem;
+  color: #e8b4b0;
+  border-color: var(--red);
+}
+
+.table-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr minmax(13rem, 18rem);
+  gap: 0.9rem;
+  min-height: 33rem;
+}
+
+.floor-rail {
+  position: absolute;
+  z-index: 5;
+  top: 1rem;
+  left: 50%;
+  display: flex;
+  gap: 0.5rem;
+  transform: translateX(-50%);
+}
+
+.table-chip.MuiChip-root {
+  min-width: 0;
+  height: 1.85rem;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  background: #090807;
+  color: var(--muted);
+  font-family: inherit;
+  font-weight: 800;
+}
+
+.table-chip .MuiChip-label {
+  padding: 0 0.55rem;
+  overflow: visible;
+}
+
+.table-chip-gold.MuiChip-root,
+.floor-rail .active.MuiChip-root {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: #17110f;
+}
+
+.table-chip-red.MuiChip-root {
+  border-color: var(--red);
+  color: #e8b4b0;
+}
+
+.table-chip-green.MuiChip-root,
+.floor-rail .done.MuiChip-root {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.felt-table {
+  position: relative;
+  min-height: min(62vh, 42rem);
+  border: 3px solid var(--line);
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--felt);
+}
+
+.felt-table::before {
+  content: "";
+  position: absolute;
+  inset: 7% 11%;
+  border: 2px dashed rgba(201, 162, 39, 0.35);
+  pointer-events: none;
+}
+
+.lamp {
+  display: none;
+}
+
+.board-zone {
+  position: absolute;
+  z-index: 3;
+  top: 35%;
+  left: 50%;
+  width: min(34rem, 52%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.board-zone p {
+  margin: 0 0 0.65rem;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.board-cards,
+.mini-cards {
+  display: flex;
+  justify-content: center;
+  gap: 0.48rem;
+}
+
+.playing-card-shell {
+  width: clamp(2.75rem, 5.3vw, 4.15rem);
+  aspect-ratio: 750 / 1050;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+
+.playing-card-svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0.18rem 0.18rem rgba(0, 0, 0, 0.35));
+}
+
+.playing-card-shell.compact {
+  width: 2.05rem;
+}
+
+.pot-badge {
+  margin-top: 0.85rem;
+  height: 2.2rem;
+}
+
+.seat-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.seat-card {
+  position: absolute;
+  z-index: 4;
+  width: min(18rem, 31vw);
+  display: grid;
+  grid-template-columns: 4.4rem minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: start;
+}
+
+.seat-0 {
+  left: 50%;
+  bottom: 1rem;
+  width: min(24rem, 54vw);
+  transform: translateX(-50%);
+}
+
+.seat-1 {
+  left: 3%;
+  top: 12%;
+}
+
+.seat-2 {
+  right: 3%;
+  top: 12%;
+}
+
+.seat-3 {
+  left: 5%;
+  bottom: 20%;
+}
+
+.seat-4 {
+  right: 5%;
+  bottom: 20%;
+}
+
+.portrait-frame {
+  width: 4.4rem;
+  aspect-ratio: 0.78;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  overflow: hidden;
+  background: #1a1714;
+}
+
+.portrait-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.portrait-frame span {
+  color: var(--gold);
+  font-weight: 900;
+}
+
+.seat-panel {
+  min-width: 0;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  padding: 0.62rem;
+  background: #100d0b;
+}
+
+.seat-panel.MuiCard-root {
+  background: #100d0b;
+}
+
+.seat-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.45rem;
+  margin-bottom: 0.45rem;
+}
+
+.seat-title strong {
+  overflow: hidden;
+  font-size: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+}
+
+.speech-bubble {
+  margin-top: 0.55rem;
+  border-left: 3px solid var(--gold);
+  padding-left: 0.55rem;
+  color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.event-reel {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.event-reel div {
+  border: 2px solid var(--line);
+  border-radius: 0;
+  padding: 0.65rem;
+  background: var(--panel);
+}
+
+.event-reel span {
+  display: block;
+  color: var(--dim);
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.event-reel strong {
+  display: block;
+  margin-top: 0.15rem;
+  text-transform: capitalize;
+}
+
+.quiet-event {
+  color: var(--muted);
+}
+
+.action-dock {
+  display: grid;
+  grid-template-columns: minmax(16rem, 1fr) 7rem auto;
+  gap: 0.7rem;
+  align-items: end;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  padding: 0.75rem;
+  background: var(--panel);
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  justify-content: flex-end;
+}
+
+.action-buttons button {
+  min-width: 5.1rem;
+  min-height: 2.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.38rem;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  background: #14110f;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.action-buttons button:not(:disabled):hover,
+.hud-actions button:hover,
+.trace-drawer button:hover {
+  border-color: var(--gold);
+  background: #1a1714;
+}

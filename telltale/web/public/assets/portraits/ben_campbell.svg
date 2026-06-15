@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 410" role="img" aria-label="Noir portrait of Ben Campbell">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#1d2825"/><stop offset="1" stop-color="#050606"/></linearGradient>
+    <linearGradient id="hood" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#253d45"/><stop offset="1" stop-color="#081014"/></linearGradient>
+  </defs>
+  <rect width="320" height="410" fill="url(#bg)"/>
+  <path d="M50 65h220v282H50z" fill="#060808" opacity=".6"/>
+  <path d="M66 361c21-78 55-119 99-119 42 0 74 41 94 119v49H66z" fill="url(#hood)"/>
+  <path d="M108 143c7-46 33-73 60-73 38 0 61 31 57 82-5 66-31 103-64 103-37 0-62-42-53-112z" fill="#c2875f"/>
+  <path d="M98 150c17-57 51-86 103-86 25 14 39 39 42 74-48-19-96-15-145 12z" fill="#24170f"/>
+  <path d="M118 119c34 14 72 17 113 8-15-35-39-53-74-52-25 1-38 15-39 44z" fill="#1a100d"/>
+  <path d="M123 190h30M183 191h28" stroke="#120d0c" stroke-width="8" stroke-linecap="round"/>
+  <path d="M157 214c8 4 17 4 26 0" stroke="#74412f" stroke-width="5" stroke-linecap="round"/>
+  <path d="M137 239c20 11 43 11 65 0" stroke="#2b1712" stroke-width="6" stroke-linecap="round"/>
+  <path d="M95 313c42 20 88 20 137 0" stroke="#63d6a1" stroke-width="5" opacity=".45"/>
+  <circle cx="73" cy="88" r="25" fill="#63d6a1" opacity=".2"/>
+  <text x="24" y="386" fill="#f3c77f" font-family="Georgia,serif" font-size="27" font-weight="700">BEN</text>
+</svg>

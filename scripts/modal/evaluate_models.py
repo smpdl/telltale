@@ -53,13 +53,13 @@ def run_model_eval(
     candidate_file_json: str | None = None,
     case_ids: list[str] | None = None,
     max_cases: int | None = 3,
-    max_tokens: int = 420,
+    max_tokens: int = 320,
     context_size: int = 2048,
-    temperature: float = 0.45,
+    temperature: float = 0.30,
     seed: int = 17,
     n_gpu_layers: int = -1,
-    speech_max_words: int = 28,
-    rationale_max_words: int = 36,
+    speech_max_words: int = 16,
+    rationale_max_words: int = 24,
 ) -> str:
     from telltale.models.eval_prompts import (
         COMPARISON_MODEL_CANDIDATES,
@@ -147,12 +147,12 @@ def main(
     candidate_file: str = "",
     cases: str = "",
     max_cases: int = 1,
-    max_tokens: int = 420,
+    max_tokens: int = 0,
     context_size: int = 2048,
-    temperature: float = 0.45,
+    temperature: float = -1.0,
     seed: int = 17,
     n_gpu_layers: int = -1,
-    profile: str = "default",
+    profile: str = "auto",
 ) -> None:
     candidate_labels = _split_csv(candidates)
     case_ids = _split_csv(cases)
@@ -161,14 +161,17 @@ def main(
         from telltale.models.eval_prompts import COMPARISON_MODEL_CANDIDATES
 
         candidate_labels = [candidate.label for candidate in COMPARISON_MODEL_CANDIDATES]
-    if profile == "nemotron":
-        max_tokens = 520
-        temperature = 0.55
+    resolved_profile = _resolve_profile(profile, candidate_labels)
+    if resolved_profile == "nemotron":
+        max_tokens = max_tokens if max_tokens > 0 else 520
+        temperature = temperature if temperature >= 0 else 0.55
         speech_max_words = 36
         rationale_max_words = 44
     else:
-        speech_max_words = 28
-        rationale_max_words = 36
+        max_tokens = max_tokens if max_tokens > 0 else 320
+        temperature = temperature if temperature >= 0 else 0.30
+        speech_max_words = 16
+        rationale_max_words = 24
     outputs = []
     for label in candidate_labels:
         try:
@@ -199,3 +202,11 @@ def main(
 
 def _split_csv(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def _resolve_profile(profile: str, candidate_labels: list[str]) -> str:
+    if profile != "auto":
+        return profile
+    if candidate_labels and all(label.startswith("nemotron") for label in candidate_labels):
+        return "nemotron"
+    return "default"

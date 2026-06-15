@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 410" role="img" aria-label="Noir portrait of Teddy KGB">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#231014"/><stop offset="1" stop-color="#050405"/></linearGradient>
+    <linearGradient id="coat" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#351016"/><stop offset="1" stop-color="#080405"/></linearGradient>
+  </defs>
+  <rect width="320" height="410" fill="url(#bg)"/>
+  <path d="M42 59h236v292H42z" fill="#090505" opacity=".64"/>
+  <path d="M58 361c19-89 54-132 105-132s84 43 101 132v49H58z" fill="url(#coat)"/>
+  <path d="M107 138c7-46 33-73 59-73 43 0 66 34 60 89-7 66-32 103-66 103-37 0-62-44-53-119z" fill="#b97755"/>
+  <path d="M96 150c12-58 48-91 109-99 26 18 39 49 39 92-48-24-97-22-148 7z" fill="#161111"/>
+  <path d="M103 113c47 15 91 17 132 5-16-39-43-58-80-55-28 2-45 19-52 50z" fill="#0d0a0a"/>
+  <path d="M121 190h31M184 190h31" stroke="#120d0c" stroke-width="8" stroke-linecap="round"/>
+  <path d="M158 218c8 4 17 4 27 0" stroke="#723e2e" stroke-width="5" stroke-linecap="round"/>
+  <path d="M134 237c26 16 51 16 76 0" stroke="#3b1312" stroke-width="6" stroke-linecap="round"/>
+  <path d="M88 323c49 28 101 28 156 0" stroke="#db4d47" stroke-width="5" opacity=".58"/>
+  <circle cx="244" cy="83" r="31" fill="#db4d47" opacity=".24"/>
+  <text x="24" y="386" fill="#f3c77f" font-family="Georgia,serif" font-size="27" font-weight="700">TEDDY</text>
+</svg>

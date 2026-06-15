@@ -78,8 +78,6 @@ def build_agent_prompt(
             "Do not include markdown, comments, trailing prose, or keys outside required_output.exact_keys_only.",
             "The solver recommendation is advisory context, not a command.",
             "Your rationale should be honest. Your speech should sound like the character at the table.",
-            "Your speech must be an original reply from this agent, not copied from the player_utterance.",
-            "If private_agent_state includes hand_summary, treat it as authoritative and do not invent a different made hand.",
             "You may play suboptimally when personality, memory, or player dialogue justify it.",
             json.dumps(payload, default=_json_default, ensure_ascii=True, separators=(",", ":")),
             "Return one complete JSON object now. Do not add any key after memory_delta.",

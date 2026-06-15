@@ -224,6 +224,9 @@ __marimo__/
 runs/
 .modal/
 
+docs/
+node_modules/
+*.tsbuildinfo
 
 .venv/
 __pycache__/

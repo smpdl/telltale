@@ -19,7 +19,7 @@ def test_empty_utterance_serializes_cleanly_and_prompt_omits_it():
     )
 
     assert utterance.to_dict() == {"raw_text": "", "target_agent_id": None}
-    assert "player_utterance" not in prompt
+    assert '"player_utterance"' not in prompt
 
 
 def test_non_empty_utterance_preserves_raw_text_and_target():

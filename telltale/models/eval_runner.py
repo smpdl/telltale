@@ -29,14 +29,14 @@ class TextRuntime(Protocol):
 @dataclass(frozen=True)
 class EvalRunConfig:
     context_size: int = 2048
-    max_tokens: int = 420
-    temperature: float = 0.45
+    max_tokens: int = 320
+    temperature: float = 0.30
     seed: int | None = 17
     output_dir: str = "runs/model_evals"
     hardware_profile: str = "local"
     n_gpu_layers: int = 0
-    speech_max_words: int = 28
-    rationale_max_words: int = 36
+    speech_max_words: int = 16
+    rationale_max_words: int = 24
 
 
 @dataclass(frozen=True)
@@ -195,6 +195,7 @@ def evaluate_case(
     except Exception as exc:  # noqa: BLE001 - eval records failures instead of hiding them
         error = f"{type(exc).__name__}: {exc}"
     latency_ms = (time.perf_counter() - started) * 1000
+    generation_metadata = getattr(runtime, "last_generation_metadata", None)
     return AgentEvalResult(
         candidate_label=candidate.label,
         case_id=case.case_id,
@@ -224,6 +225,7 @@ def evaluate_case(
             "seed": config.seed,
             "speech_max_words": config.speech_max_words,
             "rationale_max_words": config.rationale_max_words,
+            "generation": generation_metadata if isinstance(generation_metadata, dict) else {},
         },
     )
 

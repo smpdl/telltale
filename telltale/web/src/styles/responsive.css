@@ -1,0 +1,147 @@
+@media (max-width: 1060px) {
+  .top-hud,
+  .table-stage,
+  .action-dock {
+    grid-template-columns: 1fr;
+  }
+
+  .hud-metrics,
+  .hud-actions,
+  .action-buttons {
+    justify-content: flex-start;
+  }
+
+  .event-reel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .felt-table {
+    min-height: 42rem;
+  }
+
+  .seat-card {
+    width: min(20rem, 42vw);
+  }
+
+  .seat-0 {
+    width: min(24rem, calc(100% - 2rem));
+  }
+}
+
+@media (max-width: 760px) {
+  .reward-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-lockup {
+    gap: 0.55rem;
+  }
+
+  .brand-lockup h1 {
+    font-size: clamp(2.4rem, 16vw, 4.5rem);
+    letter-spacing: 0.14em;
+  }
+
+  .title-scene .home-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: min(22rem, 100%);
+    margin: 0 auto;
+  }
+
+  .title-btn {
+    min-width: 0;
+  }
+
+  .title-utility {
+    top: 0.85rem;
+    right: 0.85rem;
+  }
+
+  .title-decor {
+    left: 0.85rem;
+    bottom: 0.85rem;
+  }
+
+  .home-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: min(22rem, 100%);
+    margin: 0 auto;
+  }
+
+  .menu-action {
+    min-width: 0;
+  }
+
+  .round-action {
+    width: 100%;
+  }
+
+  .map-scene {
+    overflow: auto;
+  }
+
+  .map-node {
+    grid-template-columns: auto 1fr;
+  }
+
+  .table-scene {
+    padding: 0.7rem;
+  }
+
+  .hud-metrics,
+  .action-buttons,
+  .event-reel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .metric,
+  .action-buttons button {
+    min-width: 0;
+  }
+
+  .felt-table {
+    min-height: 58rem;
+  }
+
+  .board-zone {
+    top: 44%;
+    width: calc(100% - 2rem);
+  }
+
+  .seat-card {
+    left: 1rem !important;
+    right: auto !important;
+    width: calc(100% - 2rem);
+    transform: none !important;
+  }
+
+  .seat-0 {
+    bottom: 1rem;
+  }
+
+  .seat-1 {
+    top: 4.5rem;
+  }
+
+  .seat-2 {
+    top: 12rem;
+  }
+
+  .seat-3 {
+    top: 19.5rem;
+    bottom: auto;
+  }
+
+  .seat-4 {
+    top: 27rem;
+    bottom: auto;
+  }
+
+  .portrait-frame {
+    width: 3.8rem;
+  }
+}

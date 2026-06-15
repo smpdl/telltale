@@ -118,10 +118,10 @@ def _profile_defaults(profile: str) -> dict[str, float | int]:
             "rationale_max_words": 44,
         }
     return {
-        "max_tokens": 420,
-        "temperature": 0.45,
-        "speech_max_words": 28,
-        "rationale_max_words": 36,
+        "max_tokens": 320,
+        "temperature": 0.30,
+        "speech_max_words": 16,
+        "rationale_max_words": 24,
     }
 
 

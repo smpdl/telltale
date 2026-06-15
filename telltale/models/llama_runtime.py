@@ -81,12 +81,39 @@ class GenerationResult:
     metadata: dict[str, Any]
 
 
+def _first_choice(output: dict[str, Any]) -> dict[str, Any]:
+    choices = output.get("choices") or []
+    if not choices or not isinstance(choices[0], dict):
+        return {}
+    return choices[0]
+
+
+def _choice_text(output: dict[str, Any]) -> str:
+    return str(_first_choice(output).get("text") or "")
+
+
+def _generation_metadata(output: dict[str, Any]) -> dict[str, Any]:
+    choice = _first_choice(output)
+    text = str(choice.get("text") or "")
+    metadata: dict[str, Any] = {
+        "finish_reason": choice.get("finish_reason"),
+        "raw_text_length": len(text),
+        "raw_text_stripped_length": len(text.strip()),
+        "raw_text_repr": repr(text[:240]),
+    }
+    usage = output.get("usage")
+    if isinstance(usage, dict):
+        metadata["usage"] = usage
+    return metadata
+
+
 class LocalTextRuntime:
     """Small llama.cpp-compatible text runtime with a deterministic mock mode."""
 
     def __init__(self, settings: RuntimeSettings | None = None):
         self.settings = settings or RuntimeSettings.from_env()
         self._llama = None
+        self.last_generation_metadata: dict[str, Any] = {}
         if self.settings.mode not in {"mock", "llama_cpp"}:
             raise RuntimeConfigurationError(
                 "TELLTALE_MODEL_MODE must be 'mock' or 'llama_cpp'."
@@ -133,9 +160,9 @@ class LocalTextRuntime:
             max_tokens=max_tokens or self.settings.max_tokens,
             temperature=temperature if temperature is not None else self.settings.temperature,
             seed=seed if seed is not None else self.settings.seed,
-            stop=["\n\n"],
         )
-        text = str(output["choices"][0]["text"]).strip()
+        self.last_generation_metadata = _generation_metadata(output)
+        text = _choice_text(output)
         latency_ms = int((time.perf_counter() - started) * 1000)
         token_count = len(text.split())
         tps = (token_count / (latency_ms / 1000)) if latency_ms > 0 else None
@@ -182,6 +209,7 @@ class LocalLlamaCppRuntime:
         self.config = config
         self.model_path = self._resolve_model_path(config)
         self._llama = self._load_llama(config, self.model_path)
+        self.last_generation_metadata: dict[str, Any] = {}
 
     def generate(
         self,
@@ -196,9 +224,9 @@ class LocalLlamaCppRuntime:
             max_tokens=max_tokens or self.config.max_tokens,
             temperature=temperature if temperature is not None else self.config.temperature,
             seed=seed if seed is not None else self.config.seed,
-            stop=["\n\n"],
         )
-        return str(output["choices"][0]["text"]).strip()
+        self.last_generation_metadata = _generation_metadata(output)
+        return _choice_text(output)
 
     @staticmethod
     def _resolve_model_path(config: LlamaRuntimeConfig) -> str:

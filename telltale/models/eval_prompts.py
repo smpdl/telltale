@@ -113,7 +113,6 @@ SMOKE_EVAL_CASES: tuple[AgentEvalCase, ...] = (
         },
         private_agent_state={
             "hole_cards": ["Ks", "Qs"],
-            "hand_summary": "pair of sevens from the board with king-queen kickers; no queen pair",
             "stack": 220,
             "position": "button",
         },
@@ -142,7 +141,6 @@ SMOKE_EVAL_CASES: tuple[AgentEvalCase, ...] = (
         },
         private_agent_state={
             "hole_cards": ["Kc", "Tc"],
-            "hand_summary": "top pair kings with ten kicker",
             "stack": 430,
             "position": "field",
         },
@@ -171,7 +169,6 @@ SMOKE_EVAL_CASES: tuple[AgentEvalCase, ...] = (
         },
         private_agent_state={
             "hole_cards": ["Qd", "Qs"],
-            "hand_summary": "three of a kind queens on a wet heart board",
             "stack": 700,
             "position": "button",
         },

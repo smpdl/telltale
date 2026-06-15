@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 410" role="img" aria-label="Noir portrait of Lancey Howard">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#29241f"/><stop offset="1" stop-color="#070606"/></linearGradient>
+    <linearGradient id="suit" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#2b2c2a"/><stop offset="1" stop-color="#070707"/></linearGradient>
+  </defs>
+  <rect width="320" height="410" fill="url(#bg)"/>
+  <path d="M46 61h228v284H46z" fill="#090807" opacity=".6"/>
+  <path d="M62 361c20-78 54-119 101-119 45 0 79 41 98 119v49H62z" fill="url(#suit)"/>
+  <path d="M109 141c6-45 33-73 58-73 42 0 64 34 58 88-7 65-32 101-65 101-36 0-60-43-51-116z" fill="#b97855"/>
+  <path d="M101 145c12-61 45-93 98-94 31 19 43 49 34 91-44-22-88-21-132 3z" fill="#d2c2a7"/>
+  <path d="M102 150c41-30 83-34 126-12-2-23-8-41-19-55-40 3-75 26-107 67z" fill="#efe0c3"/>
+  <path d="M126 190h28M184 190h28" stroke="#17100e" stroke-width="8" stroke-linecap="round"/>
+  <path d="M158 216c7 4 16 4 25 0" stroke="#70402e" stroke-width="5" stroke-linecap="round"/>
+  <path d="M135 238c22 12 45 12 68 0" stroke="#2e1914" stroke-width="6" stroke-linecap="round"/>
+  <path d="M138 266h50" stroke="#f0bd6a" stroke-width="5" opacity=".5"/>
+  <circle cx="250" cy="88" r="23" fill="#f0bd6a" opacity=".2"/>
+  <text x="24" y="386" fill="#f3c77f" font-family="Georgia,serif" font-size="27" font-weight="700">LANCEY</text>
+</svg>
