@@ -219,5 +219,52 @@ def _clean_message(error: Exception) -> str:
 app = create_app()
 
 
+def _launch_kwargs() -> dict[str, Any]:
+    return {
+        "server_name": os.getenv("GRADIO_SERVER_NAME", "0.0.0.0"),
+        "server_port": int(os.getenv("PORT", os.getenv("GRADIO_SERVER_PORT", "7860"))),
+        "ssr_mode": False,
+        "_frontend": False,
+        "show_error": True,
+    }
+
+
+def _acquire_space_launch_lock() -> bool:
+    if not os.getenv("SPACE_ID"):
+        return True
+
+    import fcntl
+    import sys
+
+    lock_path = Path(os.getenv("TMPDIR", "/tmp")) / "telltale-space.launch.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_file = lock_path.open("w")
+    try:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        # Dev-mode Spaces can spawn multiple workers; only one should bind :7860.
+        sys.exit(0)
+
+    globals()["_space_launch_lock_file"] = lock_file
+    return True
+
+
+def launch_app() -> None:
+    import time
+
+    _acquire_space_launch_lock()
+
+    kwargs = _launch_kwargs()
+    retries = 10 if os.getenv("SPACE_ID") else 1
+    for attempt in range(retries):
+        try:
+            app.launch(**kwargs)
+            return
+        except OSError as error:
+            if "empty port" not in str(error) or attempt >= retries - 1:
+                raise
+            time.sleep(1)
+
+
 if __name__ == "__main__":
-    app.launch(ssr_mode=False, _frontend=False, show_error=True)
+    launch_app()
