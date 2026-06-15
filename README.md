@@ -2,7 +2,7 @@
 title: Telltale
 sdk: gradio
 sdk_version: 6.18.0
-app_file: run_space.py
+app_file: app.py
 python_version: "3.10"
 colorFrom: indigo
 colorTo: gray

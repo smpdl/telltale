@@ -230,5 +230,12 @@ def _launch_without_ssr(*args: Any, **kwargs: Any):
 app.launch = _launch_without_ssr  # type: ignore[method-assign]
 
 
-if __name__ == "__main__":
+def _run_uvicorn() -> None:
+    os.environ["TELLTALE_UVICORN_IMPORT"] = "1"
     uvicorn.run("app:app", host="0.0.0.0", port=7860, reload=False)
+
+
+if __name__ == "__main__" or (
+    os.getenv("SPACE_ID") and os.getenv("TELLTALE_UVICORN_IMPORT") != "1"
+):
+    _run_uvicorn()
