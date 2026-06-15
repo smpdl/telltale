@@ -227,6 +227,8 @@ runs/
 docs/
 node_modules/
 *.tsbuildinfo
+!telltale/web/dist/
+!telltale/web/dist/**
 
 .venv/
 __pycache__/

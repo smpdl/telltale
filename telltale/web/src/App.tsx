@@ -12,7 +12,6 @@ import type {
   FloorCatalog,
   FloorPreview,
   GameEvent,
-  ModelMode,
   PublicState,
   TraceExport
 } from "./lib/types";
@@ -31,6 +30,8 @@ export function App() {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [floors, setFloors] = React.useState<FloorPreview[]>([]);
   const [floorsLoading, setFloorsLoading] = React.useState(true);
+  const [ttsEnabled, setTtsEnabled] = React.useState(false);
+  const [sttEnabled, setSttEnabled] = React.useState(false);
   const soundtrack = useHomeSoundtrack(!state);
 
   React.useEffect(() => {
@@ -69,7 +70,10 @@ export function App() {
     const result = await runApi(() =>
       apiRequest<PublicState>("/api/start", {
         method: "POST",
-        body: JSON.stringify({ model_mode: "llama_cpp" satisfies ModelMode })
+        body: JSON.stringify({
+          tts_enabled: ttsEnabled,
+          stt_enabled: sttEnabled
+        })
       })
     );
     if (result) {
@@ -212,7 +216,19 @@ export function App() {
                 {soundtrack.enabled ? "Turn off" : "Turn on"}
               </button>
             </div>
-            <p>Gameplay starts through the configured llama.cpp runtime.</p>
+            <div className="settings-row">
+              <span>Agent voices</span>
+              <button className="secondary-action" onClick={() => setTtsEnabled((value) => !value)}>
+                {ttsEnabled ? "Turn off" : "Turn on"}
+              </button>
+            </div>
+            <div className="settings-row">
+              <span>Speech input</span>
+              <button className="secondary-action" onClick={() => setSttEnabled((value) => !value)}>
+                {sttEnabled ? "Turn off" : "Turn on"}
+              </button>
+            </div>
+            <p>Gameplay starts through the configured llama-server runtime.</p>
           </InfoModal>
         )}
       </AnimatePresence>

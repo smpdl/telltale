@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 410" role="img" aria-label="Noir portrait of Ace Rothstein">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#211c16"/><stop offset="1" stop-color="#060606"/></linearGradient>
+    <linearGradient id="suit" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#1c2527"/><stop offset="1" stop-color="#06090a"/></linearGradient>
+  </defs>
+  <rect width="320" height="410" fill="url(#bg)"/>
+  <path d="M47 61h226v286H47z" fill="#080707" opacity=".62"/>
+  <path d="M67 360c19-80 52-119 96-119 45 0 76 39 94 119v50H67z" fill="url(#suit)"/>
+  <path d="M109 141c6-45 31-72 58-72 40 0 62 32 58 84-6 67-32 103-65 103-36 0-61-43-51-115z" fill="#bf7f58"/>
+  <path d="M100 143c20-61 58-88 113-78 21 18 29 42 25 73-40-18-86-16-138 5z" fill="#2d1d14"/>
+  <path d="M112 123c40 4 80 2 119-8-15-33-39-49-74-47-26 1-41 20-45 55z" fill="#1a120e"/>
+  <path d="M121 190h32M183 190h32" stroke="#120d0c" stroke-width="8" stroke-linecap="round"/>
+  <path d="M157 215c8 4 17 4 27 0" stroke="#76412f" stroke-width="5" stroke-linecap="round"/>
+  <path d="M136 238c21 11 44 11 67 0" stroke="#2b1712" stroke-width="6" stroke-linecap="round"/>
+  <path d="M110 285h105" stroke="#63d6a1" stroke-width="4" opacity=".43"/>
+  <circle cx="245" cy="82" r="25" fill="#63d6a1" opacity=".16"/>
+  <text x="24" y="386" fill="#f3c77f" font-family="Georgia,serif" font-size="27" font-weight="700">ACE</text>
+</svg>

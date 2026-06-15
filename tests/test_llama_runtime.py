@@ -1,5 +1,4 @@
-import sys
-import types
+import json
 
 import pytest
 
@@ -23,39 +22,91 @@ def test_mock_runtime_uses_nemotron_metadata_without_gguf():
     assert result.metadata["runtime_backend"] == "mock"
 
 
-def test_llama_mode_requires_local_gguf_path():
-    with pytest.raises(RuntimeConfigurationError, match="TELLTALE_GGUF_PATH"):
-        LocalTextRuntime(RuntimeSettings(mode="llama_cpp", gguf_path=None))
+def test_llama_cpp_mode_is_compatibility_alias():
+    with pytest.raises(RuntimeConfigurationError, match="llama-server request failed"):
+        LocalTextRuntime(RuntimeSettings(mode="llama_cpp", server_url="http://127.0.0.1:9"))
 
 
-def test_eval_runtime_can_resolve_huggingface_candidate(monkeypatch, tmp_path):
-    model_path = tmp_path / "nemotron.gguf"
-    model_path.write_text("placeholder", encoding="utf-8")
-    calls = {}
+def test_llama_server_runtime_calls_openai_compatible_endpoint(monkeypatch):
+    calls = []
 
-    def fake_hf_hub_download(*, repo_id, filename):
-        calls["repo_id"] = repo_id
-        calls["filename"] = filename
-        return str(model_path)
+    class FakeResponse:
+        def __init__(self, payload):
+            self.payload = payload
 
-    class FakeLlama:
-        def __init__(self, **kwargs):
-            calls["llama_kwargs"] = kwargs
+        def __enter__(self):
+            return self
 
-        def __call__(self, prompt, **kwargs):
-            calls["prompt"] = prompt
-            calls["generate_kwargs"] = kwargs
-            return {
-                "choices": [{"text": ' {"action":"check"}\n', "finish_reason": "stop"}],
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(self.payload).encode("utf-8")
+
+    def fake_urlopen(request, timeout):
+        calls.append(
+            {
+                "url": request.full_url,
+                "method": request.get_method(),
+                "body": json.loads(request.data.decode("utf-8")) if request.data else None,
+                "timeout": timeout,
+            }
+        )
+        if request.full_url.endswith("/v1/models"):
+            return FakeResponse({"data": [{"id": "telltale-agent"}]})
+        return FakeResponse(
+            {
+                "choices": [
+                    {
+                        "message": {"content": ' {"action":"check"}\n'},
+                        "finish_reason": "stop",
+                    }
+                ],
                 "usage": {"completion_tokens": 5},
             }
+        )
 
-    monkeypatch.setitem(
-        sys.modules,
-        "huggingface_hub",
-        types.SimpleNamespace(hf_hub_download=fake_hf_hub_download),
-    )
-    monkeypatch.setitem(sys.modules, "llama_cpp", types.SimpleNamespace(Llama=FakeLlama))
+    monkeypatch.setattr("telltale.models.llama_runtime.request.urlopen", fake_urlopen)
+
+    runtime = LocalTextRuntime(RuntimeSettings(mode="llama_server", server_url="http://llama.test:8080"))
+
+    result = runtime.generate("prompt", max_tokens=32, temperature=0.4, seed=17)
+
+    assert result.text == ' {"action":"check"}\n'
+    assert calls[0]["url"] == "http://llama.test:8080/v1/models"
+    assert calls[1]["url"] == "http://llama.test:8080/v1/chat/completions"
+    assert calls[1]["body"]["messages"] == [{"role": "user", "content": "prompt"}]
+    assert calls[1]["body"]["max_tokens"] == 32
+    assert calls[1]["body"]["temperature"] == 0.4
+    assert calls[1]["body"]["seed"] == 17
+    assert result.metadata["runtime_backend"] == "llama_server"
+    assert runtime.last_generation_metadata["finish_reason"] == "stop"
+    assert runtime.last_generation_metadata["usage"] == {"completion_tokens": 5}
+
+
+def test_eval_runtime_uses_llama_server(monkeypatch):
+    calls = []
+
+    class FakeResponse:
+        def __init__(self, payload):
+            self.payload = payload
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(self.payload).encode("utf-8")
+
+    def fake_urlopen(request, timeout):
+        calls.append(request.full_url)
+        if request.full_url.endswith("/v1/models"):
+            return FakeResponse({"data": [{"id": "telltale-agent"}]})
+        return FakeResponse({"choices": [{"message": {"content": "{}"}}]})
+
+    monkeypatch.setattr("telltale.models.llama_runtime.request.urlopen", fake_urlopen)
 
     runtime = LocalLlamaCppRuntime(
         LlamaRuntimeConfig(
@@ -63,18 +114,12 @@ def test_eval_runtime_can_resolve_huggingface_candidate(monkeypatch, tmp_path):
             filename="NVIDIA-Nemotron3-Nano-4B-Q4_K_M.gguf",
             context_size=2048,
             n_gpu_layers=-1,
+            server_url="http://llama.test:8080",
         )
     )
 
     output = runtime.generate("prompt", max_tokens=32, temperature=0.4, seed=17)
 
-    assert output == ' {"action":"check"}\n'
-    assert calls["repo_id"] == "nvidia/NVIDIA-Nemotron-3-Nano-4B-GGUF"
-    assert calls["filename"] == "NVIDIA-Nemotron3-Nano-4B-Q4_K_M.gguf"
-    assert calls["llama_kwargs"]["model_path"] == str(model_path)
-    assert calls["llama_kwargs"]["n_gpu_layers"] == -1
-    assert calls["generate_kwargs"]["max_tokens"] == 32
-    assert "stop" not in calls["generate_kwargs"]
-    assert runtime.last_generation_metadata["finish_reason"] == "stop"
-    assert runtime.last_generation_metadata["raw_text_length"] == len(output)
-    assert runtime.last_generation_metadata["usage"] == {"completion_tokens": 5}
+    assert output == "{}"
+    assert calls == ["http://llama.test:8080/v1/models", "http://llama.test:8080/v1/chat/completions"]
+    assert runtime.last_generation_metadata["runtime_backend"] == "llama_server"

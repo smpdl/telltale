@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 410" role="img" aria-label="Noir portrait of Sydney">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#20221b"/><stop offset="1" stop-color="#050505"/></linearGradient>
+    <linearGradient id="coat" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#2a3027"/><stop offset="1" stop-color="#070807"/></linearGradient>
+  </defs>
+  <rect width="320" height="410" fill="url(#bg)"/>
+  <path d="M48 62h224v285H48z" fill="#080807" opacity=".62"/>
+  <path d="M64 362c19-84 53-124 100-124 46 0 79 40 96 124v48H64z" fill="url(#coat)"/>
+  <path d="M109 140c7-44 32-71 58-71 41 0 63 33 58 86-6 66-31 101-64 101-36 0-62-42-52-116z" fill="#b87855"/>
+  <path d="M99 146c17-59 52-89 104-89 30 17 43 45 39 84-45-22-92-20-143 5z" fill="#d7d0bf"/>
+  <path d="M105 130c38 5 82 2 132-9-17-38-43-56-78-53-28 2-46 23-54 62z" fill="#eee4ce"/>
+  <path d="M122 190h31M183 190h31" stroke="#120d0c" stroke-width="8" stroke-linecap="round"/>
+  <path d="M157 215c8 4 17 4 27 0" stroke="#74412f" stroke-width="5" stroke-linecap="round"/>
+  <path d="M136 238c22 12 46 12 70 0" stroke="#2d1712" stroke-width="6" stroke-linecap="round"/>
+  <path d="M98 318c45 21 92 21 141 0" stroke="#e8d9b8" stroke-width="5" opacity=".46"/>
+  <circle cx="73" cy="88" r="24" fill="#f0bd6a" opacity=".18"/>
+  <text x="24" y="386" fill="#f3c77f" font-family="Georgia,serif" font-size="27" font-weight="700">SYDNEY</text>
+</svg>

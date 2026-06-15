@@ -28,7 +28,9 @@ class ErrorPayload(BaseModel):
 
 class StartRequest(BaseModel):
     seed: int | None = None
-    model_mode: Literal["mock", "llama_cpp"] = "llama_cpp"
+    model_mode: Literal["mock", "zero_gpu", "llama_server", "llama_cpp"] | None = None
+    tts_enabled: bool = False
+    stt_enabled: bool = False
 
 
 class ActionRequest(BaseModel):
@@ -61,7 +63,7 @@ def create_gradio_app() -> gr.Blocks:
         state_json = gr.JSON(label="Public state")
 
         def on_start() -> dict[str, Any]:
-            return api.start_run(settings={"model_mode": "llama_cpp"})
+            return api.start_run()
 
         start.click(on_start, inputs=[], outputs=state_json)
 
@@ -76,7 +78,18 @@ def create_app() -> gr.Server:
 
     @app.post("/api/start")
     def start_run(request: StartRequest):
-        return _api_call(lambda: api.start_run(seed=request.seed, settings={"model_mode": request.model_mode}))
+        settings: dict[str, Any] = {
+            "tts_enabled": request.tts_enabled,
+            "stt_enabled": request.stt_enabled,
+        }
+        if request.model_mode is not None:
+            settings["model_mode"] = request.model_mode
+        return _api_call(
+            lambda: api.start_run(
+                seed=request.seed,
+                settings=settings,
+            )
+        )
 
     @app.get("/api/floors")
     def list_floors():
@@ -108,6 +121,18 @@ def create_app() -> gr.Server:
     @app.get("/api/trace/{run_id}")
     def export_trace(run_id: str):
         return _api_call(lambda: api.export_trace(run_id))
+
+    @app.post("/api/transcribe/{run_id}")
+    async def transcribe_audio(run_id: str, request: Request):
+        audio = await request.body()
+        return _api_call(lambda: api.transcribe_player_audio(run_id, audio))
+
+    @app.get("/api/audio/{audio_id}")
+    def get_audio(audio_id: str):
+        result = _api_call(lambda: api.get_tts_audio(audio_id))
+        if isinstance(result, JSONResponse):
+            return result
+        return FileResponse(result["path"], media_type=result["mime_type"])
 
     if ASSETS_DIR.exists():
         app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")

@@ -1,0 +1,11 @@
+fastapi
+gradio
+numpy
+pydantic
+uvicorn
+spaces
+torch
+transformers>=4.48.3
+accelerate
+sentencepiece
+protobuf

@@ -45,6 +45,7 @@ def main(argv: list[str] | None = None) -> int:
         seed=args.seed,
         output_dir=args.output_dir,
         hardware_profile=args.hardware_profile,
+        server_url=args.server_url,
         n_gpu_layers=args.n_gpu_layers,
         speech_max_words=args.speech_max_words
         if args.speech_max_words is not None
@@ -103,6 +104,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rationale-max-words", type=int, default=None)
     parser.add_argument("--seed", type=int, default=17)
     parser.add_argument("--hardware-profile", default="local")
+    parser.add_argument("--server-url", default="http://127.0.0.1:8080")
     parser.add_argument("--n-gpu-layers", type=int, default=0)
     parser.add_argument("--list-candidates", action="store_true")
     parser.add_argument("--list-cases", action="store_true")

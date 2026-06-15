@@ -34,6 +34,7 @@ class EvalRunConfig:
     seed: int | None = 17
     output_dir: str = "runs/model_evals"
     hardware_profile: str = "local"
+    server_url: str = "http://127.0.0.1:8080"
     n_gpu_layers: int = 0
     speech_max_words: int = 16
     rationale_max_words: int = 24
@@ -102,6 +103,7 @@ def build_runtime_for_candidate(
         model_path=model_path,
         repo_id=None if model_path else candidate.hf_repo_id,
         filename=None if model_path else candidate.gguf_filename,
+        server_url=config.server_url,
         context_size=config.context_size,
         max_tokens=config.max_tokens,
         temperature=config.temperature,

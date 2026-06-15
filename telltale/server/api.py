@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from enum import Enum
+from pathlib import Path
 from random import Random
 from typing import Any
 
@@ -33,7 +34,7 @@ DEMO_SEED = 77713
 
 @dataclass(frozen=True)
 class RunSettings:
-    model_mode: str = "mock"
+    model_mode: str | None = None
     seed: int | None = None
     tts_enabled: bool = False
     stt_enabled: bool = False
@@ -187,6 +188,29 @@ def export_trace(run_id: str) -> dict[str, Any]:
     return TraceExport(run_id=run_id, path=path, content=session.trace.export_text()).to_dict()
 
 
+def transcribe_player_audio(run_id: str, audio: bytes) -> dict[str, Any]:
+    session = _get_session(run_id)
+    result = session.stt.transcribe(audio)
+    return {
+        "text": result.text,
+        "confidence": result.confidence,
+        "disabled": result.disabled,
+        "error": result.error,
+    }
+
+
+def get_tts_audio(audio_id: str) -> dict[str, Any]:
+    if "/" in audio_id or "\\" in audio_id or audio_id in {"", ".", ".."}:
+        raise ValueError("invalid audio id")
+    path = (Path("runs/tts_cache") / audio_id).resolve()
+    cache_root = Path("runs/tts_cache").resolve()
+    if cache_root not in path.parents:
+        raise ValueError("invalid audio id")
+    if not path.is_file():
+        raise KeyError(f"unknown audio id: {audio_id}")
+    return {"path": str(path), "mime_type": "audio/wav"}
+
+
 def reset_sessions() -> None:
     _SESSIONS.clear()
 
@@ -273,7 +297,14 @@ def _agent_turn(session: GameSession, builder: EventBuilder, actor: PlayerState)
     builder.emit("agent_spoke", player_id=actor.player_id, name=actor.name, text=decision.speech)
     tts = session.tts.synthesize(decision.speech, profile.voice_id)
     if tts.audio_path:
-        builder.emit("tts_ready", player_id=actor.player_id, audio_path=tts.audio_path, mime_type=tts.mime_type)
+        audio_id = Path(tts.audio_path).name
+        builder.emit(
+            "tts_ready",
+            player_id=actor.player_id,
+            audio_id=audio_id,
+            audio_url=f"/api/audio/{audio_id}",
+            mime_type=tts.mime_type,
+        )
     elif tts.error and not tts.disabled:
         builder.emit("tts_failed", player_id=actor.player_id, error=tts.error)
     session.trace.record(
@@ -551,8 +582,10 @@ __all__ = [
     "choose_reward",
     "continue_until_player_turn",
     "export_trace",
+    "get_tts_audio",
     "get_state",
     "reset_sessions",
     "start_run",
     "submit_player_action",
+    "transcribe_player_audio",
 ]
