@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any, Literal
 
@@ -14,6 +15,7 @@ from pydantic import BaseModel, Field
 from telltale.server import api
 
 
+os.environ.setdefault("GRADIO_SSR_MODE", "false")
 WEB_DIR = Path(__file__).parent / "telltale" / "web"
 DIST_DIR = WEB_DIR / "dist"
 ASSETS_DIR = DIST_DIR / "assets"
@@ -216,6 +218,15 @@ def _clean_message(error: Exception) -> str:
 
 
 app = create_app()
+_server_launch = app.launch
+
+
+def _launch_without_ssr(*args: Any, **kwargs: Any):
+    kwargs.setdefault("ssr_mode", False)
+    return _server_launch(*args, **kwargs)
+
+
+app.launch = _launch_without_ssr  # type: ignore[method-assign]
 
 
 if __name__ == "__main__":

@@ -1,11 +1,12 @@
 ---
 title: Telltale
 sdk: gradio
+sdk_version: 6.18.0
 app_file: app.py
 python_version: "3.10"
 colorFrom: indigo
 colorTo: gray
-short_description: A local-model poker roguelike where table talk changes the hand.
+short_description: AI poker roguelike with table talk.
 models:
   - nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
   - nvidia/NVIDIA-Nemotron-3-Nano-4B-GGUF
