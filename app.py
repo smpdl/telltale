@@ -222,7 +222,8 @@ _server_launch = app.launch
 
 
 def _launch_without_ssr(*args: Any, **kwargs: Any):
-    kwargs.setdefault("ssr_mode", False)
+    kwargs["ssr_mode"] = False
+    kwargs["_frontend"] = False
     return _server_launch(*args, **kwargs)
 
 
