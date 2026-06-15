@@ -229,6 +229,8 @@ node_modules/
 *.tsbuildinfo
 !telltale/web/dist/
 !telltale/web/dist/**
+telltale/web/dist/dream.mp3
+telltale/web/public/dream.mp3
 
 .venv/
 __pycache__/
