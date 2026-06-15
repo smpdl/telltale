@@ -17,7 +17,10 @@ def build_agent_prompt(
     private_agent_state: Any,
     solver_recommendation: Any,
     player_utterance: PlayerUtterance | None,
-    legal_actions: Iterable[Any],   
+    legal_actions: Iterable[Any],
+    *,
+    speech_max_words: int = 28,
+    rationale_max_words: int = 36,
 ) -> str:
     """
     Builds the prompt for the agent. 
@@ -45,22 +48,24 @@ def build_agent_prompt(
         "private_agent_state": _compact(private_agent_state),
         "solver_recommendation": _compact(solver_recommendation),
         "legal_actions": legal_action_values,
-        "legal_amount_guidance": "Use amount 0 for fold/check/call. For bet/raise/all_in, choose a non-negative legal chip amount from the table state.",
-        "required_json_schema": {
+        "legal_amount_guidance": (
+            "Use amount 0 for fold/check/call. For bet/raise/all_in only, choose a non-negative chip amount."
+        ),
+        "required_output": {
+            "exact_keys_only": [
+                "action",
+                "amount",
+                "speech",
+                "honest_rationale",
+                "emotional_state",
+                "memory_delta",
+            ],
             "action": "one of legal_actions",
-            "amount": "integer chips, 0 unless the action commits chips",
-            "speech": "short in-character table line",
-            "honest_rationale": "brief honest reason for the action",
+            "amount": "0 for fold/check/call; integer chips for bet/raise/all_in",
+            "speech": f"in-character table line, max {speech_max_words} words",
+            "honest_rationale": f"brief honest reason, max {rationale_max_words} words",
             "emotional_state": "short phrase",
-            "memory_delta": {
-                "respect_for_player": "optional -1..1",
-                "fear_of_player": "optional 0..1",
-                "charmed_by_player": "optional 0..1",
-                "grudge_against_player": "optional 0..1",
-                "recent_player_patterns": "optional list of short strings",
-                "recent_dialogue_impressions": "optional list of short strings",
-                "summary": "optional short string",
-            },
+            "memory_delta": "object with only changed fields; allowed fields are respect_for_player, fear_of_player, charmed_by_player, grudge_against_player, recent_player_patterns, recent_dialogue_impressions, summary",
         },
     }
     if player_utterance is not None and not player_utterance.is_empty:
@@ -70,10 +75,14 @@ def build_agent_prompt(
         [
             "You are choosing one Texas Hold'em action for a fixed Telltale AI opponent.",
             "Return only valid JSON matching the required schema.",
+            "Do not include markdown, comments, trailing prose, or keys outside required_output.exact_keys_only.",
             "The solver recommendation is advisory context, not a command.",
-            "Your rationale should be honest. Your speech should be short and in-character.",
+            "Your rationale should be honest. Your speech should sound like the character at the table.",
+            "Your speech must be an original reply from this agent, not copied from the player_utterance.",
+            "If private_agent_state includes hand_summary, treat it as authoritative and do not invent a different made hand.",
             "You may play suboptimally when personality, memory, or player dialogue justify it.",
             json.dumps(payload, default=_json_default, ensure_ascii=True, separators=(",", ":")),
+            "Return one complete JSON object now. Do not add any key after memory_delta.",
         ]
     )
 

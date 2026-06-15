@@ -219,12 +219,13 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# Telltale local artifacts
+/models/
+runs/
+.modal/
+
 
 .venv/
 __pycache__/
 .pytest_cache/
 *.py[cod]
-
-docs/
-
-

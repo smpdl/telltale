@@ -53,9 +53,26 @@ def parse_agent_decision(raw_model_output: str) -> AgentDecision:
         speech=str(data["speech"]),
         honest_rationale=str(data["honest_rationale"]),
         emotional_state=str(data.get("emotional_state") or "composed"),
-        memory_delta=MemoryDelta.from_mapping(data.get("memory_delta") or data.get("memory_updates")),
+        memory_delta=MemoryDelta.from_mapping(_normalize_memory_delta(data.get("memory_delta") or data.get("memory_updates"))),
         source="model",
     )
+
+
+def _normalize_memory_delta(data: Any) -> dict[str, Any] | None:
+    if not isinstance(data, dict):
+        return data
+    normalized = dict(data)
+    aliases = {
+        "respect_delta": "respect_for_player",
+        "fear_delta": "fear_of_player",
+        "charm_delta": "charmed_by_player",
+        "grudge_delta": "grudge_against_player",
+        "note": "summary",
+    }
+    for source, target in aliases.items():
+        if source in normalized and target not in normalized:
+            normalized[target] = normalized[source]
+    return normalized
 
 
 def validate_and_repair(
