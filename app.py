@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any, Literal
 
 import gradio as gr
-import uvicorn
 from fastapi import HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, Response
@@ -218,24 +217,7 @@ def _clean_message(error: Exception) -> str:
 
 
 app = create_app()
-_server_launch = app.launch
 
 
-def _launch_without_ssr(*args: Any, **kwargs: Any):
-    kwargs["ssr_mode"] = False
-    kwargs["_frontend"] = False
-    return _server_launch(*args, **kwargs)
-
-
-app.launch = _launch_without_ssr  # type: ignore[method-assign]
-
-
-def _run_uvicorn() -> None:
-    os.environ["TELLTALE_UVICORN_IMPORT"] = "1"
-    uvicorn.run("app:app", host="0.0.0.0", port=7860, reload=False)
-
-
-if __name__ == "__main__" or (
-    os.getenv("SPACE_ID") and os.getenv("TELLTALE_UVICORN_IMPORT") != "1"
-):
-    _run_uvicorn()
+if __name__ == "__main__":
+    app.launch(ssr_mode=False, _frontend=False, show_error=True)
